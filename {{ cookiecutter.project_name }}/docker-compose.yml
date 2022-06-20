@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+
+  database_srv:
+    image: docker.io/postgis/postgis:14-3.2-alpine
+    env_file:
+      - .env.dev
+    volumes:
+      - database_data:/var/lib/postgresql/data
+      - ./app:/app
+
+  redis_srv:
+    image: docker.io/redis:6.2-alpine
+
+  app:
+    user: "1000:1001"
+    image: {{ cookiecutter.dj_project_name}}:latest
+    build:
+      context: ./app/
+      dockerfile: ../deploy/app.Dockerfile
+    env_file:
+      - .env.dev
+    command: python manage.py runserver 0.0.0.0:{{ cookiecutter.dj_container_port }}
+    #command: hypercorn mngr.asgi:application --bind '0.0.0.0:{{ cookiecutter.dj_container_port }}'
+    volumes:
+      - ./app:/app
+      - ./deploy:/deploy
+    ports:
+      - "{{ cookiecutter.dj_container_port }}:{{ cookiecutter.dj_container_port }}"
+    depends_on:
+      - redis_srv
+      - database_srv
+
+  worker:
+    user: "1000:1001"
+    image: {{ cookiecutter.dj_project_name}}:latest
+    env_file:
+      - .env.dev
+    command: celery --app core worker -E -l DEBUG
+    volumes:
+      - ./app:/app
+      - ./deploy:/deploy
+    depends_on:
+      - app
+      - redis
+
+  beat:
+    user: "1000:1001"
+    image: {{ cookiecutter.dj_project_name}}:latest
+    env_file:
+      - .env.dev
+    command: celery --app core beat -l DEBUG
+    volumes:
+      - ./app:/app
+      - ./deploy:/deploy
+    depends_on:
+      - worker
+      - redis
+
+  poetry:
+    image: {{ cookiecutter.dj_project_name }}_poetry:latest
+    volumes:
+      - ./app:/app
+      - ./deploy:/deploy
+    working_dir: /app
+    command: /deploy/poetry_shell.sh
+    profiles:
+      - tools
+
+  black:
+    image: docker.io/pyfound/black:latest_release
+    volumes:
+      - ./app:/src
+    working_dir: /src
+    command: black /src
+    profiles:
+      - tools
+
+volumes:
+  database_data:

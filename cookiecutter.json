@@ -1,0 +1,10 @@
+{
+  "project_name": "MyNewProject",
+  "project_description": "My Next Django Project",
+  "project_license": "Proprietary",
+  "project_author": "First Last <email@domain.com>",
+  "dj_project_name": "my_new_project",
+  "dj_container_port": 8100,
+  "dj_aws_id": "",
+  "dj_aws_key": ""
+}
