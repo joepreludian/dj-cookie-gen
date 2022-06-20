@@ -23,6 +23,7 @@ mv app/_dj_setups/settings.py app/core/settings.py
 mv app/_dj_setups/celery.py app/core/celery.py
 mv app/_dj_setups/core__init__.py app/core/__init__.py
 mv app/_dj_setups/urls.py app/core/urls.py
+mv app/_dj_setups/storages.py app/core/storages.py
 
 rmdir app/_dj_setups
 echo "SECRET_KEY=`openssl rand -base64 48`" >> .env.dev

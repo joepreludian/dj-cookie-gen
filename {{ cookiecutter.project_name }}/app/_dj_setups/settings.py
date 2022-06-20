@@ -306,5 +306,5 @@ AWS_DEFAULT_ACL = 'private'
 
 AWS_S3_STORAGE_PREFIX = PROJECT_NAME
 
-STATICFILES_STORAGE = 'base.storages.StaticSiteStorage'
+STATICFILES_STORAGE = 'core.storages.StaticSiteStorage'
 PROJECT_BASE_STATIC_BUCKET = f'{PROJECT_NAME}-static'
