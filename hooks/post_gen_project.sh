@@ -30,6 +30,9 @@ echo "SECRET_KEY=`openssl rand -base64 48`" >> .env.dev
 echo "-> Consolidating settings"
 make run_black
 
+echo "-> Init git repo"
+git init
+
 echo "Please Run this command to start your project"
 echo "  -> make django_first_run"
 

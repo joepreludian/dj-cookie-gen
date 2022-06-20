@@ -29,7 +29,7 @@ env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(BASE_DIR / ".env.dev")
 
 # Project information
-# PROJECT_NAME
+PROJECT_NAME = f"{env('PROJECT_NAME')}_{env('PROJECT_ENVIRONMENT')}"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -290,3 +290,21 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+# Django Storages configuration
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_ACCESS_KEY_ID = env('AWS_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_KEY')
+AWS_S3_REGION_NAME = env('AWS_REGION')
+
+# Files bucket
+AWS_STORAGE_BUCKET_NAME = f'{PROJECT_NAME}-files'
+AWS_QUERYSTRING_EXPIRE = 1800
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'private'
+
+AWS_S3_STORAGE_PREFIX = PROJECT_NAME
+
+STATICFILES_STORAGE = 'base.storages.StaticSiteStorage'
+PROJECT_BASE_STATIC_BUCKET = f'{PROJECT_NAME}-static'
